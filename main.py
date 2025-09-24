@@ -46,7 +46,7 @@ def write_result(similarity: float, output_path: str):
 
 def calculate_edit_distance_v1(s1: str, s2: str) -> int:
     """
-    计算两个字符串之间的编辑距离（Levenshtein距离）。
+    计算两个字符串之间的编辑距离（Levenshtein距离），v1版本采用递归实现。
 
     Args:
         s1: 第一个字符串。
@@ -55,7 +55,6 @@ def calculate_edit_distance_v1(s1: str, s2: str) -> int:
     Returns:
         编辑距离。
     """
-    # 采用递归实现
     if not s1:
         return len(s2)
     if not s2:
@@ -65,10 +64,46 @@ def calculate_edit_distance_v1(s1: str, s2: str) -> int:
         return calculate_edit_distance_v1(s1[1:], s2[1:])
     else:
         return 1 + min(
-            calculate_edit_distance_v1(s1[1:], s2),  # 删除 s1 的首字符
-            calculate_edit_distance_v1(s1, s2[1:]),  # 在 s1 中插入 s2 的首字符
-            calculate_edit_distance_v1(s1[1:], s2[1:])  # 替换 s1 的首字符为 s2 的首字符
+            calculate_edit_distance_v1(s1[1:], s2),  # 删除
+            calculate_edit_distance_v1(s1, s2[1:]),  # 插入
+            calculate_edit_distance_v1(s1[1:], s2[1:])  # 替换
         )
+
+
+def calculate_edit_distance_v2(s1: str, s2: str) -> int:
+    """
+    计算两个字符串之间的编辑距离（Levenshtein距离），v2版本采用动态规划实现。
+
+    Args:
+        s1: 第一个字符串。
+        s2: 第二个字符串。
+
+    Returns:
+        编辑距离。
+    """
+    m, n = len(s1), len(s2)
+
+    # 创建DP table
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+
+    # 初始化第一行和第一列
+    for i in range(m + 1):
+        dp[i][0] = i
+    for j in range(n + 1):
+        dp[0][j] = j
+
+    # 填充DP table
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            cost = 0 if s1[i - 1] == s2[j - 1] else 1
+            dp[i][j] = min(
+                dp[i - 1][j] + 1,       # 删除
+                dp[i][j - 1] + 1,       # 插入
+                dp[i - 1][j - 1] + cost  # 替换
+            )
+
+    # 返回最终的编辑距离
+    return dp[m][n]
 
 
 def plagiarism_check(original_file_path: str, plagiarized_file_path: str, output_file_path: str):
@@ -86,6 +121,7 @@ def plagiarism_check(original_file_path: str, plagiarized_file_path: str, output
     plagiarized_text = read_file(plagiarized_file_path)
 
     # 计算编辑距离
+    # distance = calculate_edit_distance_v2(original_text, plagiarized_text)
     distance = calculate_edit_distance_v1(original_text, plagiarized_text)
 
     # 计算重复率
@@ -99,8 +135,7 @@ def plagiarism_check(original_file_path: str, plagiarized_file_path: str, output
     # 写入结果
     write_result(similarity, output_file_path)
 
-    # print(f"Similarity calculation complete. Result has been written to {output_file_path}")
-
+    # print(f"Similarity calculation complete. Repetition rate: {similarity:.2f}. Result has been written to {output_file_path}")
 
 def main():
     """
