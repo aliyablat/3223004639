@@ -37,7 +37,7 @@
         3.  根据编辑距离和文本长度计算相似度（重复率）。
         4.  调用 `write_result` 函数将计算出的相似度写入指定的输出文件。
 
-  - **`calculate_edit_distance_v1(s1: str, s2: str) -> int` 和 `calculate_edit_distance_v2(s1: str, s2: str) -> int`**
+  - **`calculate_edit_distance(s1: str, s2: str) -> int`**
 
       - **功能**: 算法核心，计算两个字符串之间的编辑距离（Levenshtein 距离）。
       - **参数**: 接收两个待比较的字符串 `s1` 和 `s2`。
