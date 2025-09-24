@@ -121,8 +121,8 @@ def plagiarism_check(original_file_path: str, plagiarized_file_path: str, output
     plagiarized_text = read_file(plagiarized_file_path)
 
     # 计算编辑距离
-    # distance = calculate_edit_distance_v2(original_text, plagiarized_text)
-    distance = calculate_edit_distance_v1(original_text, plagiarized_text)
+    distance = calculate_edit_distance_v2(original_text, plagiarized_text)
+    # distance = calculate_edit_distance_v1(original_text, plagiarized_text)
 
     # 计算重复率
     max_len = max(len(original_text), len(plagiarized_text))
